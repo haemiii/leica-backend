@@ -7,9 +7,8 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class RequestChildCategoryDto {
-    private String parentName;
+@NoArgsConstructor @AllArgsConstructor
+public class ResponseChildCategoryDto {
+    private Long id;
     private String childName;
 }
