@@ -26,4 +26,7 @@ public class Category {
     @OneToMany(mappedBy = "parent")
     private final List<Category> child = new ArrayList<>();
 
+    @OneToMany(mappedBy = "childCategory")
+    private final List<Post> posts = new ArrayList<>();
+
 }
