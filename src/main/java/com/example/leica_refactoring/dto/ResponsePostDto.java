@@ -11,5 +11,6 @@ public class ResponsePostDto {
     private String content;
     private String thumbnail;
     private String writer;
+    private String category;
 
 }

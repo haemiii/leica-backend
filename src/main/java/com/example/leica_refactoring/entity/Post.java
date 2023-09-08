@@ -23,5 +23,8 @@ public class Post {
     @Lob
     private String thumbnail;
 
+    @ManyToOne
+    private Category childCategory;
+
 
 }
