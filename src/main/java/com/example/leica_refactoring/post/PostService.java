@@ -68,6 +68,7 @@ public class PostService {
                         .content(post.getContent())
                         .thumbnail(post.getThumbnail())
                         .writer(post.getMember().getMemberId())
+                        .category(post.getChildCategory().getName())
                         .build()
         ).collect(Collectors.toList());
 
