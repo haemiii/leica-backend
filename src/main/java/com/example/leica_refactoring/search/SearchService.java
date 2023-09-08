@@ -25,6 +25,7 @@ public class SearchService {
 
         List<ResponsePostDto> collect = postList.stream().map(post ->
                         ResponsePostDto.builder()
+                                .id(post.getId())
                                 .title(post.getTitle())
                                 .content(post.getContent())
                                 .thumbnail(post.getThumbnail())
