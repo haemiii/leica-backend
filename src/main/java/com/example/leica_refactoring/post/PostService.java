@@ -13,10 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,11 +56,13 @@ public class PostService {
         }
     }
 
-    public List<ResponsePostDto> findAll() {
+    public ResponsePostListDto findAll() {
         List<Post> all = postRepository.findAll();
+        int size = all.size();
 
         List<ResponsePostDto> collect = all.stream().map(post ->
                 ResponsePostDto.builder()
+                        .id(post.getId())
                         .title(post.getTitle())
                         .content(post.getContent())
                         .thumbnail(post.getThumbnail())
@@ -72,7 +71,12 @@ public class PostService {
                         .build()
         ).collect(Collectors.toList());
 
-        return collect;
+        ResponsePostListDto build = ResponsePostListDto.builder()
+                .size((long) size)
+                .childList(collect)
+                .build();
+
+        return build;
     }
 
     public ResponsePostListDto findAllPostByParentCategory(String parentName) {
@@ -89,6 +93,7 @@ public class PostService {
             List<ResponsePostDto> postDtos = category.getChild().stream()
                     .flatMap(child -> child.getPosts().stream()
                             .map(post -> ResponsePostDto.builder()
+                                    .id(post.getId())
                                     .title(post.getTitle())
                                     .content(post.getContent())
                                     .thumbnail(post.getThumbnail())
@@ -129,6 +134,7 @@ public class PostService {
 
             List<ResponsePostDto> postDtos = selectedChildCategory.getPosts().stream()
                     .map(post -> ResponsePostDto.builder()
+                            .id(post.getId())
                             .title(post.getTitle())
                             .content(post.getContent())
                             .thumbnail(post.getThumbnail())
@@ -185,4 +191,19 @@ public class PostService {
     }
 
 
+    public ResponsePostDto showPost(Long id) {
+        Optional<Post> postOptional = postRepository.findById(id);
+        Post post = postOptional.orElseThrow(() -> new NoSuchElementException("게시물이 존재하지 않습니다."));
+
+        ResponsePostDto build = ResponsePostDto.builder()
+                .id(post.getId())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .thumbnail(post.getThumbnail())
+                .writer(post.getMember().getMemberId())
+                .category(post.getChildCategory().getName())
+                .build();
+
+        return build;
+    }
 }
