@@ -50,35 +50,27 @@ public class PostService {
                     .childCategory(childCategory)
                     .member(member)
                     .build();
-
             Post save = postRepository.save(post);
             return save.getId();
         }
     }
 
+
+    // 전체 게시물 반환
     public ResponsePostListDto findAll() {
         List<Post> all = postRepository.findAll();
         int size = all.size();
 
-        List<ResponsePostDto> collect = all.stream().map(post ->
-                ResponsePostDto.builder()
-                        .id(post.getId())
-                        .title(post.getTitle())
-                        .content(post.getContent())
-                        .thumbnail(post.getThumbnail())
-                        .writer(post.getMember().getMemberId())
-                        .category(post.getChildCategory().getName())
-                        .build()
+        List<ResponsePostDto> collect = all.stream().map(PostService::getBuild
         ).collect(Collectors.toList());
 
-        ResponsePostListDto build = ResponsePostListDto.builder()
+        return ResponsePostListDto.builder()
                 .size((long) size)
                 .childList(collect)
                 .build();
-
-        return build;
     }
 
+    // 부모 카테고리안에 존재하는 모든 게시물 반환
     public ResponsePostListDto findAllPostByParentCategory(String parentName) {
         Category category = categoryRepository.findByName(parentName);
         if(category == null){
@@ -92,27 +84,19 @@ public class PostService {
 
             List<ResponsePostDto> postDtos = category.getChild().stream()
                     .flatMap(child -> child.getPosts().stream()
-                            .map(post -> ResponsePostDto.builder()
-                                    .id(post.getId())
-                                    .title(post.getTitle())
-                                    .content(post.getContent())
-                                    .thumbnail(post.getThumbnail())
-                                    .writer(post.getMember().getMemberId())
-                                    .category(post.getChildCategory().getName())
-                                    .build()
+                            .map(PostService::getBuild
                             )
                     )
                     .collect(Collectors.toList());
 
-            ResponsePostListDto build = ResponsePostListDto.builder()
+            return ResponsePostListDto.builder()
                     .size(totalPostCount)
                     .childList(postDtos)
                     .build();
-
-            return build;
         }
     }
 
+    // 자식 카테고리 안에있는 모든 게시물 반환
     public ResponsePostListDto findAllPostByChildCategory(String parentName, String childName) {
         List<Category> childCategories = categoryRepository.findAllByName(childName);
 
@@ -133,14 +117,7 @@ public class PostService {
             Long totalPostCount = (long) selectedChildCategory.getPosts().size();
 
             List<ResponsePostDto> postDtos = selectedChildCategory.getPosts().stream()
-                    .map(post -> ResponsePostDto.builder()
-                            .id(post.getId())
-                            .title(post.getTitle())
-                            .content(post.getContent())
-                            .thumbnail(post.getThumbnail())
-                            .writer(post.getMember().getMemberId())
-                            .category(post.getChildCategory().getName())
-                            .build()
+                    .map(PostService::getBuild
                     )
                     .collect(Collectors.toList());
 
@@ -153,15 +130,9 @@ public class PostService {
 
 
 
+    // 내용 업데이트
     public Long update(Long id, RequestPostDto requestPostDto, String username) {
-        Member member = memberRepository.findByMemberId(username);
-        Optional<Post> post = postRepository.findById(id);
-        if (member == null){
-            throw new UsernameNotFoundException("사용자가 존재하지 않습니다.");
-
-        }if(!Objects.equals(post.get().getMember().getMemberId(), username)){
-            throw new AuthorOnlyAccessException();
-        }
+        Member member = validateMemberAndPost(id, username);
         Post originPost = postRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("게시물이 존재하지 않습니다."));
 
@@ -177,15 +148,10 @@ public class PostService {
 
     }
 
-    public void delete(Long id, String username) {
-        Member member = memberRepository.findByMemberId(username);
-        Optional<Post> post = postRepository.findById(id);
 
-        if (member == null){
-            throw new UsernameNotFoundException("사용자가 존재하지 않습니다.");
-        }if(!Objects.equals(post.get().getMember().getMemberId(), username)){
-            throw new AuthorOnlyAccessException();
-        }
+
+    public void delete(Long id, String username) {
+        validateMemberAndPost(id, username);
         postRepository.deleteById(id);
 
     }
@@ -195,7 +161,28 @@ public class PostService {
         Optional<Post> postOptional = postRepository.findById(id);
         Post post = postOptional.orElseThrow(() -> new NoSuchElementException("게시물이 존재하지 않습니다."));
 
-        ResponsePostDto build = ResponsePostDto.builder()
+        return getBuild(post);
+    }
+
+
+
+    private Member validateMemberAndPost(Long id, String username) {
+        Member member = memberRepository.findByMemberId(username);
+        Optional<Post> post = postRepository.findById(id);
+        if (member == null){
+            throw new UsernameNotFoundException("사용자가 존재하지 않습니다.");
+
+        }
+        if(!Objects.equals(post.get().getMember().getMemberId(), username)){
+            throw new AuthorOnlyAccessException();
+        }
+        return member;
+    }
+
+
+
+    private static ResponsePostDto getBuild(Post post) {
+        return ResponsePostDto.builder()
                 .id(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
@@ -203,7 +190,5 @@ public class PostService {
                 .writer(post.getMember().getMemberId())
                 .category(post.getChildCategory().getName())
                 .build();
-
-        return build;
     }
 }
