@@ -7,9 +7,11 @@ import lombok.Data;
 @Builder
 public class ResponsePostDto {
 
+    private Long id;
     private String title;
     private String content;
     private String thumbnail;
     private String writer;
+    private String category;
 
 }

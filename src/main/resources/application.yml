@@ -1,0 +1,41 @@
+server:
+  port: 8080
+spring:
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+  profiles:
+    active: local
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://krleicadb.ccskuoixe9iy.ap-northeast-2.rds.amazonaws.com:3306/krleicadb?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: admin
+    password: jsnm0719
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
+        show_sql: false
+        format_sql: true
+    open-in-view: false
+
+jwt:
+  secret: JWTSECRETKRLEICABLOGJWTSECRETKRLEICABLOGJWTSECRETKRLEICABLOGJWTSECRETKRLEICABLOGJWTSECRETKRLEICABLOG
+
+
+cloud:
+  aws:
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+    s3:
+      bucket: krleicablog-bucket
+      default-url: https://krleicablog-bucket.s3.ap-northeast-2.amazonaws.com/
+
+iamAccessKey: AKIA5HGLAWUGSAFOUSTQ
+iamSecretKey: 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
