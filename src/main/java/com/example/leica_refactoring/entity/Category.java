@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -23,14 +21,9 @@ public class Category {
 
     @ManyToOne
     @JoinColumn(name = "parent_id")
-    @OnDelete(action = OnDeleteAction.CASCADE) // 부모 삭제시 자식도 삭제
     private Category parent;
 
     @OneToMany(mappedBy = "parent")
     private final List<Category> child = new ArrayList<>();
-
-    @OneToMany(mappedBy = "childCategory")
-    private final List<Post> posts = new ArrayList<>();
-
 
 }

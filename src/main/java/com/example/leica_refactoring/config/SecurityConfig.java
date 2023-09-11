@@ -13,12 +13,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
        http.authorizeRequests()
-               .antMatchers("/","/login","/create/**", "/delete/**","/find/**").permitAll()
-               .antMatchers("/post","/upload").authenticated()
+               .antMatchers("/","/login","/category/**").permitAll()
+               .antMatchers("/post").authenticated()
                .anyRequest().authenticated()
                .and()
                .csrf().disable()
-               .httpBasic().and()
+               .httpBasic().disable()
                .formLogin()
                .defaultSuccessUrl("/");
        return http.build();

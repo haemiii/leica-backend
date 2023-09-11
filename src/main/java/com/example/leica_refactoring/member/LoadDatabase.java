@@ -15,10 +15,12 @@ public class LoadDatabase {
 
     private final PasswordEncoder passwordEncoder;
 
+
     @Bean
     CommandLineRunner initDatabase(MemberRepository repository){
         return args -> {
-            log.info("Preloading"+repository.save(new Member(1L, "admin", "admin", passwordEncoder.encode("12345678"))));
+            log.info("Preloading"+repository.save(new Member(1L, "hamm", "haemi", passwordEncoder.encode("12345678"))));
+            log.info("Preloading"+repository.save(new Member(2L, "chaco", "poo", passwordEncoder.encode("12345678"))));
 
         };
     }

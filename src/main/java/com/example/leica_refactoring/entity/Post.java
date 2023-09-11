@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Getter @Setter
 @Builder
 @NoArgsConstructor @AllArgsConstructor
-public class Post extends PostTime  {
+public class Post {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,9 +22,6 @@ public class Post extends PostTime  {
 
     @Lob
     private String thumbnail;
-
-    @ManyToOne
-    private Category childCategory;
 
 
 }
