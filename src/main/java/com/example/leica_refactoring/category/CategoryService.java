@@ -2,8 +2,10 @@ package com.example.leica_refactoring.category;
 
 import com.example.leica_refactoring.dto.RequestChildCategoryDto;
 import com.example.leica_refactoring.dto.RequestParentCategoryDto;
+import com.example.leica_refactoring.dto.RequestUpdateChildCategoryDto;
 import com.example.leica_refactoring.dto.ResponseChildCategoryDto;
 import com.example.leica_refactoring.entity.Category;
+import com.example.leica_refactoring.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final MemberRepository memberRepository;
 
 
     public List<ResponseChildCategoryDto> findAllChildCategory(String parentCategory) {
@@ -75,6 +78,21 @@ public class CategoryService {
                 ()-> {
                     throw new NoSuchElementException("존재하지 않는 카테고리 입니다.");
                     });
+    }
+
+    public Long updateChildCategory(Long categoryId, RequestUpdateChildCategoryDto dto) {
+
+        Optional<Category> originCategory = categoryRepository.findById(categoryId);
+        if(!originCategory.isPresent()) {
+            throw new CategoryIsNotExists("존재하지 않는 카테고리입니다.");
+        }
+
+        Category childCategoryId = originCategory.get();
+        childCategoryId.setName(dto.getChildName());
+        categoryRepository.save(childCategoryId);
+
+        return childCategoryId.getId();
+
     }
 
 

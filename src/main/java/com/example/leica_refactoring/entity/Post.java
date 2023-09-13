@@ -18,7 +18,10 @@ public class Post extends PostTime  {
     private Member member;
 
     private String title;
+
     private String content;
+
+    private String writer;
 
     @Lob
     private String thumbnail;

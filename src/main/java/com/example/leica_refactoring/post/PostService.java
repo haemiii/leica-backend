@@ -61,8 +61,10 @@ public class PostService {
         List<Post> all = postRepository.findAll();
         int size = all.size();
 
-        List<ResponsePostDto> collect = all.stream().map(PostService::getBuild
-        ).collect(Collectors.toList());
+        List<ResponsePostDto> collect = all.stream()
+                .filter(Objects::nonNull)
+                .map(PostService::getBuild)
+                .collect(Collectors.toList());
 
         return ResponsePostListDto.builder()
                 .size((long) size)

@@ -2,6 +2,7 @@ package com.example.leica_refactoring.category;
 
 import com.example.leica_refactoring.dto.RequestChildCategoryDto;
 import com.example.leica_refactoring.dto.RequestParentCategoryDto;
+import com.example.leica_refactoring.dto.RequestUpdateChildCategoryDto;
 import com.example.leica_refactoring.dto.ResponseChildCategoryDto;
 import com.example.leica_refactoring.entity.Category;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,12 @@ public class CategoryController {
         List<ResponseChildCategoryDto> allChildCategory = categoryService.findAllChildCategory(parentCategory);
 
         return allChildCategory;
+    }
+
+    @PutMapping("/update/category/{categoryId}")
+    public Long updateChildCategory(@RequestBody RequestUpdateChildCategoryDto dto, @PathVariable Long categoryId){
+        Long update = categoryService.updateChildCategory(categoryId, dto);
+        return update;
     }
 
 
