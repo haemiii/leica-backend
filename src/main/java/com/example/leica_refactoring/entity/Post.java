@@ -17,8 +17,12 @@ public class Post extends PostTime  {
     @JoinColumn(name = "m_id")
     private Member member;
 
+    @Column(nullable = false)
     private String title;
 
+    private String subTitle;
+
+    @Column(nullable = false)
     private String content;
 
     private String writer;

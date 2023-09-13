@@ -10,13 +10,15 @@ public class RequestPostDto {
 
     private String title;
     private String content;
+    private String subTitle;
     private String thumbnail;
     private String parentName;
     private String childName;
 
 
-    private RequestPostDto(String title, String content, String thumbnail, String parentName, String childName) {
+    private RequestPostDto(String subTitle,String title, String content, String thumbnail, String parentName, String childName) {
         this.title = title;
+        this.subTitle = subTitle;
         this.content = content;
         this.thumbnail = thumbnail;
         this.parentName = parentName;
@@ -27,6 +29,7 @@ public class RequestPostDto {
     static class Builder{
         String title;
         String content;
+        String subtitle;
         String thumbnail;
         String parentName;
         String childName;
@@ -56,8 +59,13 @@ public class RequestPostDto {
             return this;
         }
 
+        Builder withSubTitle(String subTitle){
+            this.subtitle =subTitle;
+            return this;
+        }
+
         public RequestPostDto build(){
-            return new RequestPostDto(title,content, thumbnail, parentName, childName);
+            return new RequestPostDto(title,content, thumbnail, parentName, childName,subtitle);
         }
     }
 

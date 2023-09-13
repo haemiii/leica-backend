@@ -19,31 +19,31 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
-    @GetMapping("/find/category/{parentCategory}")
+    @GetMapping("/category/{parentCategory}")
     public List<ResponseChildCategoryDto> findAllChildCategoryByParentCategory(@PathVariable String parentCategory){
         List<ResponseChildCategoryDto> allChildCategory = categoryService.findAllChildCategory(parentCategory);
 
         return allChildCategory;
     }
 
-    @PutMapping("/update/category/{categoryId}")
+    @PutMapping("/category/{categoryId}")
     public Long updateChildCategory(@RequestBody RequestUpdateChildCategoryDto dto, @PathVariable Long categoryId){
         Long update = categoryService.updateChildCategory(categoryId, dto);
         return update;
     }
 
 
-    @PostMapping("/create/category/parent")
+    @PostMapping("/category/parent")
     public Long createParentCategory(@RequestBody RequestParentCategoryDto parentCategory){
         return categoryService.createParentCategory(parentCategory);
     }
 
-    @PostMapping("/create/category/child")
+    @PostMapping("/category/child")
     public Long createChildCategory(@RequestBody RequestChildCategoryDto childCategory){
         return categoryService.createChildCategory(childCategory);
     }
 
-    @DeleteMapping("/delete/category/{categoryId}")
+    @DeleteMapping("/category/{categoryId}")
     public ResponseEntity<String> deleteCategory(@PathVariable Long categoryId){
         try {
             categoryService.deleteCategory(categoryId);

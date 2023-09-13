@@ -3,6 +3,7 @@ package com.example.leica_refactoring.post;
 import com.example.leica_refactoring.dto.RequestPostDto;
 import com.example.leica_refactoring.dto.ResponsePostDto;
 import com.example.leica_refactoring.dto.ResponsePostListDto;
+import com.example.leica_refactoring.dto.ResponsePostOneDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,7 +22,6 @@ public class PostController {
     @GetMapping("/")
     public ResponsePostListDto post(){
         ResponsePostListDto all = postService.findAll();
-
         return all;
     }
 
@@ -51,10 +51,10 @@ public class PostController {
         return save;
     }
 
-    @GetMapping("/post/{id}")
-    public ResponsePostDto createPost(@PathVariable Long id){
+    @GetMapping("/find/{id}")
+    public ResponsePostOneDto createPost(@PathVariable Long id){
 
-        ResponsePostDto save = postService.showPost(id);
+        ResponsePostOneDto save = postService.showPost(id);
 
         return save;
     }

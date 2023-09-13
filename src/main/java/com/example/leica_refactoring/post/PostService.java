@@ -1,9 +1,7 @@
 package com.example.leica_refactoring.post;
 
 import com.example.leica_refactoring.category.CategoryRepository;
-import com.example.leica_refactoring.dto.RequestPostDto;
-import com.example.leica_refactoring.dto.ResponsePostDto;
-import com.example.leica_refactoring.dto.ResponsePostListDto;
+import com.example.leica_refactoring.dto.*;
 import com.example.leica_refactoring.entity.Category;
 import com.example.leica_refactoring.entity.Member;
 import com.example.leica_refactoring.entity.Post;
@@ -46,6 +44,7 @@ public class PostService {
             Post post = Post.builder()
                     .title(requestPostDto.getTitle())
                     .content(requestPostDto.getContent())
+                    .subTitle(requestPostDto.getSubTitle())
                     .thumbnail(requestPostDto.getThumbnail())
                     .childCategory(childCategory)
                     .member(member)
@@ -59,18 +58,26 @@ public class PostService {
     // 전체 게시물 반환
     public ResponsePostListDto findAll() {
         List<Post> all = postRepository.findAll();
-        int size = all.size();
+        if (all.isEmpty()) {
+            return ResponsePostListDto.builder()
+                    .size(0L)
+                    .childList(Collections.emptyList())
+                    .build();
+        }else{
+            int size = all.size();
 
-        List<ResponsePostDto> collect = all.stream()
-                .filter(Objects::nonNull)
-                .map(PostService::getBuild)
-                .collect(Collectors.toList());
+            List<ResponsePostDto> collect = all.stream()
+                    .filter(Objects::nonNull)
+                    .map(PostService::getBuild)
+                    .collect(Collectors.toList());
 
-        return ResponsePostListDto.builder()
-                .size((long) size)
-                .childList(collect)
-                .build();
+            return ResponsePostListDto.builder()
+                    .size((long) size)
+                    .childList(collect)
+                    .build();}
+
     }
+
 
     // 부모 카테고리안에 존재하는 모든 게시물 반환
     public ResponsePostListDto findAllPostByParentCategory(String parentName) {
@@ -159,11 +166,11 @@ public class PostService {
     }
 
 
-    public ResponsePostDto showPost(Long id) {
+    public ResponsePostOneDto showPost(Long id) {
         Optional<Post> postOptional = postRepository.findById(id);
         Post post = postOptional.orElseThrow(() -> new NoSuchElementException("게시물이 존재하지 않습니다."));
 
-        return getBuild(post);
+        return getOneBuild(post);
     }
 
 
@@ -182,15 +189,35 @@ public class PostService {
     }
 
 
-
     private static ResponsePostDto getBuild(Post post) {
-        return ResponsePostDto.builder()
-                .id(post.getId())
-                .title(post.getTitle())
-                .content(post.getContent())
-                .thumbnail(post.getThumbnail())
-                .writer(post.getMember().getMemberId())
-                .category(post.getChildCategory().getName())
-                .build();
+        if (post != null) {
+            return ResponsePostDto.builder()
+                    .id(post.getId())
+                    .title(post.getTitle())
+                    .subTitle(post.getSubTitle())
+                    .thumbnail(post.getThumbnail())
+                    .category(post.getChildCategory() != null ? post.getChildCategory().getName() : null)
+                    .build();
+        } else {
+            return null;
+        }
     }
+
+    private static ResponsePostOneDto getOneBuild(Post post) {
+        if (post != null) {
+            return ResponsePostOneDto.builder()
+                    .id(post.getId())
+                    .title(post.getTitle())
+                    .content(post.getContent())
+                    .subTitle(post.getSubTitle())
+                    .thumbnail(post.getThumbnail())
+                    .writer(post.getMember() != null ? post.getMember().getMemberId() : null)
+                    .category(post.getChildCategory() != null ? post.getChildCategory().getName() : null)
+                    .build();
+        } else {
+            return null;
+        }
+    }
+
+
 }

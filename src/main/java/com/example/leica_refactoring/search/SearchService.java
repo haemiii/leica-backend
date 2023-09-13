@@ -27,10 +27,8 @@ public class SearchService {
                         ResponsePostDto.builder()
                                 .id(post.getId())
                                 .title(post.getTitle())
-                                .content(post.getContent())
                                 .thumbnail(post.getThumbnail())
                                 .category(post.getChildCategory().getName())
-                                .writer(post.getMember().getMemberId())
                                 .build())
                 .collect(Collectors.toList());
 
