@@ -59,15 +59,24 @@ public class PostService {
     // 전체 게시물 반환
     public ResponsePostListDto findAll() {
         List<Post> all = postRepository.findAll();
-        int size = all.size();
+        if (all.isEmpty()) {
+            return ResponsePostListDto.builder()
+                    .size(0L)
+                    .childList(Collections.emptyList())
+                    .build();
+        }else{
+            int size = all.size();
 
-        List<ResponsePostDto> collect = all.stream().map(PostService::getBuild
-        ).collect(Collectors.toList());
+            List<ResponsePostDto> collect = all.stream()
+                    .filter(Objects::nonNull)
+                    .map(PostService::getBuild)
+                    .collect(Collectors.toList());
 
-        return ResponsePostListDto.builder()
-                .size((long) size)
-                .childList(collect)
-                .build();
+            return ResponsePostListDto.builder()
+                    .size((long) size)
+                    .childList(collect)
+                    .build();}
+
     }
 
     // 부모 카테고리안에 존재하는 모든 게시물 반환
@@ -157,6 +166,7 @@ public class PostService {
     }
 
 
+    // 게시물 반환
     public ResponsePostDto showPost(Long id) {
         Optional<Post> postOptional = postRepository.findById(id);
         Post post = postOptional.orElseThrow(() -> new NoSuchElementException("게시물이 존재하지 않습니다."));
