@@ -16,7 +16,7 @@ public class RequestPostDto {
     private String childName;
 
 
-    private RequestPostDto(String subTitle,String title, String content, String thumbnail, String parentName, String childName) {
+    private RequestPostDto(String title,String subTitle, String content, String thumbnail, String parentName, String childName) {
         this.title = title;
         this.subTitle = subTitle;
         this.content = content;
@@ -65,7 +65,7 @@ public class RequestPostDto {
         }
 
         public RequestPostDto build(){
-            return new RequestPostDto(title,content, thumbnail, parentName, childName,subtitle);
+            return new RequestPostDto(title,subtitle, content, thumbnail, parentName, childName);
         }
     }
 
